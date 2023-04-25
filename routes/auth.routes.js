@@ -1,5 +1,6 @@
 const express = require('express')
 const router = express.Router()
+const bcryptjs = require('bcryptjs')
 
 const User = require('../models/User.model')
 
@@ -35,8 +36,26 @@ router.post('/signup', async (req, res, next) => {
     }
 })
 
-  router.get('/login', (req, res, next) => {
-    res.render('auth/login')
-  })
+router.get('/login', (req, res, next) => {
+  res.render('auth/login')
+})
+
+router.post('/login', async (req, res) => {
+  try {
+    const user = await User.findOne({ username: req.body.username })
+    if (!!user) {
+      if (bcryptjs.compareSync(req.body.password, user.passwordHash)) {
+        //req.session.user = { username: user.username }
+        res.redirect('/profile')
+      } else {
+        res.render('auth/login', { errorMessage: 'Wrong password' })
+      }
+    } else {
+      res.render('auth/login', {errorMessage: 'Username not in DB'})
+    }
+  } catch (error) {
+    console.log(error)
+  }
+})
 
 module.exports = router

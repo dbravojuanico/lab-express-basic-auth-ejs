@@ -1,1 +1,14 @@
 <h1>LogIn</h1>
+
+<form method="POST" action="/auth/login">
+    <label>Username:
+      <input name="username" required/>
+    </label>
+    <label>Password: <input type="password" name="password" required /></label>
+    <button type="submit">LogIn</button>
+  </form>
+
+  <% if (typeof errorMessage !== 'undefined') { %>
+    <p style="color: red"><%= errorMessage %></p>
+    <% } %>
+    
